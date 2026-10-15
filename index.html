@@ -233,6 +233,7 @@ chips($('#memoChips'),ch=>{
 // quiz
 let list=[],idx=0,score=0,answered=false;
 const wrong=new Set(store.get('wrong',[]));
+const seen=store.get('seen',{}); // ponytail: 문제 id = 배열 인덱스라 문제 추가/삭제 시 카운트가 밀림, 필요하면 고정 id로
 const saveWrong=()=>{store.set('wrong',[...wrong]);$('#wrongN').textContent=`(${wrong.size})`};
 const norm=s=>String(s).replace(/[\s·.,()\-]/g,'').toLowerCase();
 const TYPES={mc:'객관식',ox:'OX',short:'단답형'},NS=['전체',10,20,30];
@@ -257,7 +258,16 @@ function drawSetup(){
 saveWrong();drawSetup();
 function build(){
   list=pool();
-  if($('#optShuffle').checked)list=list.map(q=>[Math.random(),q]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+  if($('#optShuffle').checked){
+    // 두 개 뽑아서 덜 나온 쪽 선택(power of two choices) → 자주 본 문제 편향 완화
+    const rest=[...list],out=[];
+    while(rest.length){
+      const i=Math.random()*rest.length|0,j=Math.random()*rest.length|0;
+      const k=(seen[rest[i].id]||0)<=(seen[rest[j].id]||0)?i:j;
+      out.push(rest.splice(k,1)[0]);
+    }
+    list=out;
+  }
   if(sel.n!=='전체')list=list.slice(0,sel.n);
   idx=0;score=0;$('#setup').hidden=true;$('#quiz').hidden=false;render();scrollTo(0,0);
 }
@@ -293,6 +303,7 @@ function render(){
 function grade(q,ok,typed){
   if(answered)return;answered=true;
   if(ok){score++;wrong.delete(q.id)}else wrong.add(q.id);saveWrong();
+  seen[q.id]=(seen[q.id]||0)+1;store.set('seen',seen);
   const ans=q.type==='mc'?`${q.answer+1}번`:q.type==='short'?[].concat(q.answer)[0]:q.answer;
   $('#fb').innerHTML=`<div class="fb ${ok?'ok':'bad'}"><b>${ok?'정답!':'오답 · 정답: '+esc(ans)}</b>${q.exp?esc(q.exp):''}${!ok&&typed?`<div style="margin-top:6px"><button class="btn" id="mark">내 답도 맞음 처리</button></div>`:''}</div>`;
   if($('#mark'))$('#mark').onclick=()=>{score++;wrong.delete(q.id);saveWrong();$('#mark').remove()};
