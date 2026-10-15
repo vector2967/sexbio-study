@@ -17,7 +17,7 @@
   --mark:#f9e79f;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --primary:#8b7ff0;--primary-pressed:#7466e6;--on-primary:#fff;
+  --primary:#8b7ff0;--primary-pressed:#7466e6;--on-primary:#16141f;
   --canvas:#191919;--surface:#202020;--surface-soft:#252525;
   --hairline:#2f2f2f;--hairline-strong:#454545;
   --ink:#ececec;--charcoal:#e3e2e0;--slate:#b5b3ad;--steel:#8f8d88;
@@ -26,7 +26,7 @@
   --mark:#5a4d1a;
 }}
 :root[data-theme="dark"]{
-  --primary:#8b7ff0;--primary-pressed:#7466e6;--on-primary:#fff;
+  --primary:#8b7ff0;--primary-pressed:#7466e6;--on-primary:#16141f;
   --canvas:#191919;--surface:#202020;--surface-soft:#252525;
   --hairline:#2f2f2f;--hairline-strong:#454545;
   --ink:#ececec;--charcoal:#e3e2e0;--slate:#b5b3ad;--steel:#8f8d88;
@@ -122,6 +122,11 @@ th{background:var(--surface);color:var(--ink);font-weight:600}
 .qset{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 12px;font-size:14px;color:var(--slate)}
 .qset label{display:flex;align-items:center;gap:6px;border:1px solid var(--hairline);border-radius:8px;padding:6px 10px}
 .empty{color:var(--steel);text-align:center;padding:30px 0}
+.sh{font-size:14px;font-weight:600;color:var(--ink);margin:0 0 8px}.sh small{font-weight:400;color:var(--steel);margin-left:6px}
+.pick{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.pick .chip{min-height:36px}
+.start{width:100%;min-height:48px;font-size:16px;margin-top:4px}
+.start:disabled{opacity:.5;cursor:default}
 footer{color:var(--steel);font-size:13px;text-align:center;padding:24px 16px 40px}
 @media (max-width:600px){
   .brand small{display:none}
@@ -168,13 +173,21 @@ footer{color:var(--steel);font-size:13px;text-align:center;padding:24px 16px 40p
   </section>
 
   <section class="view" id="v-quiz" hidden>
-    <div class="chips" id="quizChips"></div>
-    <div class="qset">
-      <label><input type="checkbox" id="optGi"> 기출만</label>
-      <label><input type="checkbox" id="optShuffle" checked> 섞기</label>
-      <label><input type="checkbox" id="optWrong"> 오답노트만 <span id="wrongN"></span></label>
+    <div class="qpanel" id="setup">
+      <div class="sh">범위 <small>여러 개 선택 가능</small></div>
+      <div class="pick" id="pCh"></div>
+      <div class="sh">유형</div>
+      <div class="pick" id="pType"></div>
+      <div class="sh">문제 수</div>
+      <div class="pick" id="pN"></div>
+      <div class="qset">
+        <label><input type="checkbox" id="optGi"> 기출만</label>
+        <label><input type="checkbox" id="optShuffle" checked> 섞기</label>
+        <label><input type="checkbox" id="optWrong"> 오답노트만 <span id="wrongN"></span></label>
+      </div>
+      <button class="btn primary start" id="start"></button>
     </div>
-    <div class="qpanel" id="quiz"></div>
+    <div class="qpanel" id="quiz" hidden></div>
   </section>
 </main>
 <footer>정리 자료 기반 학습용 · 오답 기록은 이 브라우저에만 저장됩니다</footer>
@@ -218,24 +231,45 @@ chips($('#memoChips'),ch=>{
 },'memoCh');
 
 // quiz
-let qCh='전체',list=[],idx=0,score=0,answered=false;
+let list=[],idx=0,score=0,answered=false;
 const wrong=new Set(store.get('wrong',[]));
 const saveWrong=()=>{store.set('wrong',[...wrong]);$('#wrongN').textContent=`(${wrong.size})`};
-saveWrong();
 const norm=s=>String(s).replace(/[\s·.,()\-]/g,'').toLowerCase();
-function build(){
-  list=QUESTIONS.filter(q=>(qCh==='전체'||q.ch===qCh)&&(!$('#optGi').checked||q.gi)&&(!$('#optWrong').checked||wrong.has(q.id)));
-  if($('#optShuffle').checked)list=list.map(q=>[Math.random(),q]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
-  idx=0;score=0;render();
+const TYPES={mc:'객관식',ox:'OX',short:'단답형'},NS=['전체',10,20,30];
+const sel={ch:new Set(store.get('qChs',CHS)),type:new Set(store.get('qTypes',Object.keys(TYPES))),n:store.get('qN','전체')};
+function pool(){return QUESTIONS.filter(q=>sel.ch.has(q.ch)&&sel.type.has(q.type)&&(!$('#optGi').checked||q.gi)&&(!$('#optWrong').checked||wrong.has(q.id)))}
+function multi(el,items,set,key,label=x=>x){
+  el.innerHTML=`<button class="chip" data-all aria-pressed="${set.size===items.length}">전체</button>`+items.map(x=>`<button class="chip" data-v="${x}" aria-pressed="${set.has(x)}">${label(x)}</button>`).join('');
+  el.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{
+    if('all' in b.dataset){if(set.size===items.length)set.clear();else items.forEach(x=>set.add(x))}
+    else set.has(b.dataset.v)?set.delete(b.dataset.v):set.add(b.dataset.v);
+    store.set(key,[...set]);drawSetup()});
 }
-['optGi','optShuffle','optWrong'].forEach(id=>$('#'+id).onchange=build);
+function drawSetup(){
+  multi($('#pCh'),CHS,sel.ch,'qChs');
+  multi($('#pType'),Object.keys(TYPES),sel.type,'qTypes',t=>TYPES[t]);
+  $('#pN').innerHTML=NS.map(n=>`<button class="chip" aria-pressed="${n===sel.n}">${n==='전체'?'전체':n+'문제'}</button>`).join('');
+  $('#pN').querySelectorAll('.chip').forEach((b,i)=>b.onclick=()=>{sel.n=NS[i];store.set('qN',sel.n);drawSetup()});
+  const c=pool().length,n=sel.n==='전체'?c:Math.min(sel.n,c);
+  $('#start').disabled=!n;$('#start').textContent=n?`시작 · ${n}문제`:($('#optWrong').checked?'오답노트가 비어 있어요':'조건에 맞는 문제가 없어요');
+}
+['optGi','optShuffle','optWrong'].forEach(id=>$('#'+id).onchange=drawSetup);
+saveWrong();drawSetup();
+function build(){
+  list=pool();
+  if($('#optShuffle').checked)list=list.map(q=>[Math.random(),q]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+  if(sel.n!=='전체')list=list.slice(0,sel.n);
+  idx=0;score=0;$('#setup').hidden=true;$('#quiz').hidden=false;render();scrollTo(0,0);
+}
+function toSetup(){$('#quiz').hidden=true;$('#setup').hidden=false;drawSetup();scrollTo(0,0)}
+$('#start').onclick=build;
 function render(){
   const P=$('#quiz');
-  if(!list.length){P.innerHTML=`<div class="empty">${$('#optWrong').checked?'오답노트가 비어 있어요 👍':'조건에 맞는 문제가 없어요'}</div>`;return}
+  if(!list.length){toSetup();return}
   if(idx>=list.length){
     const pct=Math.round(score/list.length*100);
-    P.innerHTML=`<div class="result"><div class="score">${score} / ${list.length}</div><p>정답률 ${pct}% · 틀린 문제는 오답노트에 저장됐어요</p><div class="acts"><button class="btn primary" id="again">다시 풀기</button><button class="btn" id="wr">오답만 풀기</button></div></div>`;
-    $('#again').onclick=build;$('#wr').onclick=()=>{$('#optWrong').checked=true;build()};return;
+    P.innerHTML=`<div class="result"><div class="score">${score} / ${list.length}</div><p>정답률 ${pct}% · 틀린 문제는 오답노트에 저장됐어요</p><div class="acts"><button class="btn primary" id="again">같은 범위 다시</button><button class="btn" id="wr">오답만 풀기</button><button class="btn" id="home">범위 다시 고르기</button></div></div>`;
+    $('#again').onclick=build;$('#wr').onclick=()=>{$('#optWrong').checked=true;build()};$('#home').onclick=toSetup;return;
   }
   const q=list[idx];answered=false;
   let body='';
@@ -245,8 +279,9 @@ function render(){
   P.innerHTML=`<div class="qmeta"><span>${idx+1} / ${list.length} · 맞힌 수 ${score}</span><span><span class="badge">${q.ch}</span> ${q.gi?'<span class="badge gi">기출</span>':''} <span class="badge">${{mc:'객관식',ox:'OX',short:'단답형'}[q.type]}</span></span></div>
   <div class="progress"><i style="width:${idx/list.length*100}%"></i></div>
   <p class="qtext">${esc(q.q)}</p>${body}<div id="fb"></div>
-  <div class="qnav"><button class="btn" id="prev" ${idx?'':'disabled'}>이전</button><button class="btn primary" id="next">${idx===list.length-1?'결과 보기':'건너뛰기'}</button></div>`;
+  <div class="qnav"><button class="btn" id="prev" ${idx?'':'disabled'}>이전</button><button class="btn" id="quit">그만</button><button class="btn primary" id="next">${idx===list.length-1?'결과 보기':'건너뛰기'}</button></div>`;
   $('#prev').onclick=()=>{idx--;render()};
+  $('#quit').onclick=()=>{idx=list.length;render()};
   $('#next').onclick=()=>{idx++;render()};
   if(q.type==='short'){$('#sf').onsubmit=e=>{e.preventDefault();const v=$('#si').value.trim();if(v)grade(q,[].concat(q.answer).some(a=>norm(a)===norm(v)),v)}}
   else P.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
@@ -264,7 +299,6 @@ function grade(q,ok,typed){
   if(q.type==='short')$('#si').disabled=true;
   $('#next').textContent=idx===list.length-1?'결과 보기':'다음 문제';
 }
-chips($('#quizChips'),ch=>{qCh=ch;build()},'quizCh');
 show(store.get('tab','notes'));
 </script>
 </body>
