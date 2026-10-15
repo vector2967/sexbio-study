@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>성의 생물학 중간 대비</title>
+<meta name="description" content="성의 생물학 1~5장(피임까지) 정리노트 · 암기노트 · 문제은행">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --primary:#5645d4;--primary-pressed:#4534b3;--on-primary:#fff;
+  --canvas:#fff;--surface:#f6f5f4;--surface-soft:#fafaf9;
+  --hairline:#e5e3df;--hairline-strong:#c8c4be;
+  --ink:#1a1a1a;--charcoal:#37352f;--slate:#5d5b54;--steel:#6b6964;
+  --ok:#1aae39;--ok-bg:#e3f6e8;--bad:#e03131;--bad-bg:#fde7e7;--warn:#dd5b00;
+  --t-peach:#ffe8d4;--t-rose:#fde0ec;--t-mint:#d9f3e1;--t-lav:#e6e0f5;--t-sky:#dcecfa;--t-yellow:#fef7d6;
+  --mark:#f9e79f;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --primary:#8b7ff0;--primary-pressed:#7466e6;--on-primary:#fff;
+  --canvas:#191919;--surface:#202020;--surface-soft:#252525;
+  --hairline:#2f2f2f;--hairline-strong:#454545;
+  --ink:#ececec;--charcoal:#e3e2e0;--slate:#b5b3ad;--steel:#8f8d88;
+  --ok:#4cc96a;--ok-bg:#1d3324;--bad:#ff6b6b;--bad-bg:#3a2121;--warn:#ff9a4d;
+  --t-peach:#3a2c22;--t-rose:#3a2430;--t-mint:#1f3328;--t-lav:#2c2740;--t-sky:#1f2c3a;--t-yellow:#37321f;
+  --mark:#5a4d1a;
+}}
+:root[data-theme="dark"]{
+  --primary:#8b7ff0;--primary-pressed:#7466e6;--on-primary:#fff;
+  --canvas:#191919;--surface:#202020;--surface-soft:#252525;
+  --hairline:#2f2f2f;--hairline-strong:#454545;
+  --ink:#ececec;--charcoal:#e3e2e0;--slate:#b5b3ad;--steel:#8f8d88;
+  --ok:#4cc96a;--ok-bg:#1d3324;--bad:#ff6b6b;--bad-bg:#3a2121;--warn:#ff9a4d;
+  --t-peach:#3a2c22;--t-rose:#3a2430;--t-mint:#1f3328;--t-lav:#2c2740;--t-sky:#1f2c3a;--t-yellow:#37321f;
+  --mark:#5a4d1a;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--canvas);color:var(--charcoal);font:16px/1.65 Pretendard,"Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;word-break:keep-all;overflow-wrap:anywhere}
+button{font:inherit;color:inherit;cursor:pointer}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px}
+header.top{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--canvas) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--hairline)}
+.bar{display:flex;align-items:center;gap:12px;height:56px}
+.brand{font-weight:700;color:var(--ink);font-size:16px;white-space:nowrap}
+.brand small{font-weight:500;color:var(--steel);margin-left:6px}
+.tabs{display:flex;gap:4px;margin-left:auto}
+.tab{white-space:nowrap;border:0;background:transparent;padding:7px 12px;border-radius:6px;font-size:14px;font-weight:500;color:var(--slate)}
+.tab[aria-selected="true"]{background:var(--surface);color:var(--ink)}
+.theme{border:1px solid var(--hairline);background:transparent;border-radius:6px;width:34px;height:34px;flex:none}
+.hero{padding:40px 0 20px}
+.hero h1{font-size:34px;line-height:1.2;letter-spacing:-.5px;color:var(--ink);margin:0 0 8px}
+.hero p{margin:0;color:var(--slate)}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0}
+.pill{font-size:13px;padding:3px 10px;border-radius:999px;background:var(--surface);color:var(--slate)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:4px 0 12px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;border:1px solid var(--hairline);background:var(--canvas);padding:6px 12px;border-radius:999px;font-size:14px;color:var(--slate)}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--canvas)}
+section.view{padding-bottom:80px}
+section.view[hidden]{display:none}
+/* notes */
+.note{border:1px solid var(--hairline);border-radius:12px;margin:0 0 16px;overflow:hidden}
+.note>summary{list-style:none;padding:16px 20px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.note>summary::-webkit-details-marker{display:none}
+.note>summary .tag{font-size:12px;font-weight:600;padding:2px 8px;border-radius:4px;color:var(--charcoal);flex:none}
+.note>summary h3{margin:0;font-size:18px;color:var(--ink);flex:1}
+.note>summary::after{content:"＋";color:var(--steel)}
+.note[open]>summary::after{content:"－"}
+.note .body{padding:0 20px 20px;border-top:1px solid var(--hairline)}
+.body h4{font-size:16px;color:var(--ink);margin:20px 0 6px}
+.body ul{margin:6px 0;padding-left:20px}
+.body li{margin:3px 0}
+.body b{color:var(--ink)}
+.body mark,.flash mark{background:var(--mark);color:inherit;padding:0 2px;border-radius:2px}
+.tip{background:var(--t-yellow);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:15px}
+.tip::before{content:"★ 출제 포인트  ";font-weight:700;color:var(--warn)}
+.tbl{overflow-x:auto;margin:10px 0;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:420px}
+th,td{border:1px solid var(--hairline);padding:7px 9px;text-align:left;vertical-align:top}
+th{background:var(--surface);color:var(--ink);font-weight:600}
+.t-peach{background:var(--t-peach)}.t-rose{background:var(--t-rose)}.t-mint{background:var(--t-mint)}.t-lav{background:var(--t-lav)}.t-sky{background:var(--t-sky)}.t-yellow{background:var(--t-yellow)}
+/* memo */
+.memo-tools{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}
+.btn{border:1px solid var(--hairline-strong);background:transparent;border-radius:8px;padding:9px 16px;font-size:14px;font-weight:500}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.btn.primary:active{background:var(--primary-pressed)}
+.btn:disabled{opacity:.45;cursor:default}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+.flash{border:1px solid var(--hairline);border-radius:12px;padding:14px 16px;background:var(--canvas);text-align:left;min-height:84px;display:flex;flex-direction:column;gap:6px}
+.flash .k{font-weight:600;color:var(--ink)}
+.flash .k small{font-weight:500;color:var(--steel);font-size:12px;margin-left:6px}
+.flash .v{color:var(--slate);font-size:15px}
+.hide-ans .flash:not(.show) .v{filter:blur(6px);user-select:none}
+.memo-h{font-size:15px;color:var(--steel);margin:22px 0 8px;font-weight:600}
+/* quiz */
+.qpanel{border:1px solid var(--hairline);border-radius:12px;padding:20px}
+.qmeta{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;color:var(--steel);margin-bottom:10px;flex-wrap:wrap}
+.badge{font-size:12px;font-weight:600;padding:2px 8px;border-radius:4px;background:var(--surface);color:var(--slate)}
+.badge.gi{background:var(--t-rose);color:var(--charcoal)}
+.progress{height:4px;background:var(--surface);border-radius:2px;margin-bottom:16px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--primary);transition:width .2s}
+.qtext{font-size:18px;font-weight:600;color:var(--ink);margin:0 0 14px;white-space:pre-line;line-height:1.55}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;border:1px solid var(--hairline);background:var(--canvas);border-radius:8px;padding:12px 14px;font-size:15px;line-height:1.5;min-height:48px}
+.opt .n{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--hairline-strong);display:grid;place-items:center;font-size:12px;color:var(--steel);margin-top:1px}
+.opt:not(:disabled):hover{border-color:var(--hairline-strong);background:var(--surface-soft)}
+.opt.ok{border-color:var(--ok);background:var(--ok-bg)}
+.opt.bad{border-color:var(--bad);background:var(--bad-bg)}
+.opt:disabled{cursor:default}
+.ox{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ox .opt{justify-content:center;font-size:22px;font-weight:700}
+.short{display:flex;gap:8px}
+.short input{flex:1;min-width:0;font:inherit;font-size:16px;padding:11px 12px;border:1px solid var(--hairline-strong);border-radius:8px;background:var(--canvas);color:var(--ink)}
+.fb{margin-top:14px;border-radius:8px;padding:12px 14px;font-size:15px}
+.fb.ok{background:var(--ok-bg)}.fb.bad{background:var(--bad-bg)}
+.fb b{display:block;margin-bottom:2px}
+.qnav{display:flex;justify-content:space-between;gap:8px;margin-top:16px}
+.result{text-align:center;padding:24px 8px}
+.result .score{font-size:48px;font-weight:700;color:var(--ink);line-height:1.1}
+.result p{color:var(--slate)}
+.result .acts{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.qset{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 12px;font-size:14px;color:var(--slate)}
+.qset label{display:flex;align-items:center;gap:6px;border:1px solid var(--hairline);border-radius:8px;padding:6px 10px}
+.empty{color:var(--steel);text-align:center;padding:30px 0}
+footer{color:var(--steel);font-size:13px;text-align:center;padding:24px 16px 40px}
+@media (max-width:600px){
+  .brand small{display:none}
+  .tab{padding:7px 9px}
+  .hero{padding:24px 0 12px}.hero h1{font-size:26px}
+  .note>summary{padding:14px 16px}.note .body{padding:0 16px 16px}
+  .qpanel{padding:16px}
+  .qtext{font-size:17px}
+  .grid{grid-template-columns:1fr}.flash{min-height:0;padding:12px 14px}
+}
+@media (max-width:480px){.brand{display:none}.tabs{margin-left:0;flex:1}.tab{flex:1;padding:7px 4px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap bar">
+  <div class="brand">성의 생물학<small>1~5장 · 피임까지</small></div>
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" data-v="notes" aria-selected="true">정리노트</button>
+    <button class="tab" role="tab" data-v="memo" aria-selected="false">암기노트</button>
+    <button class="tab" role="tab" data-v="quiz" aria-selected="false">문제풀기</button>
+  </nav>
+  <button class="theme" id="theme" aria-label="다크모드 전환">◐</button>
+</div></header>
+
+<main class="wrap">
+  <div class="hero">
+    <h1>성의 생물학 시험 대비</h1>
+    <p>범위 1장~5장(피임) · 객관식 위주, 일부 단답형</p>
+    <div class="pills" id="stats"></div>
+  </div>
+
+  <section class="view" id="v-notes">
+    <div class="chips" id="noteChips"></div>
+    <div id="notes"></div>
+  </section>
+
+  <section class="view" id="v-memo" hidden>
+    <div class="memo-tools">
+      <button class="btn primary" id="memoHide">가리고 외우기</button>
+      <span style="color:var(--steel);font-size:14px;align-self:center">가린 상태에서 카드를 누르면 답이 보여요</span>
+    </div>
+    <div class="chips" id="memoChips"></div>
+    <div id="memo"></div>
+  </section>
+
+  <section class="view" id="v-quiz" hidden>
+    <div class="chips" id="quizChips"></div>
+    <div class="qset">
+      <label><input type="checkbox" id="optGi"> 기출만</label>
+      <label><input type="checkbox" id="optShuffle" checked> 섞기</label>
+      <label><input type="checkbox" id="optWrong"> 오답노트만 <span id="wrongN"></span></label>
+    </div>
+    <div class="qpanel" id="quiz"></div>
+  </section>
+</main>
+<footer>정리 자료 기반 학습용 · 오답 기록은 이 브라우저에만 저장됩니다</footer>
+
+<script src="data.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}};
+const CHS=[...new Set(NOTES.map(n=>n.ch))];
+
+// theme
+const applyTheme=t=>{if(t)document.documentElement.dataset.theme=t;else delete document.documentElement.dataset.theme};
+applyTheme(store.get('theme',null));
+$('#theme').onclick=()=>{const dark=matchMedia('(prefers-color-scheme: dark)').matches;const cur=document.documentElement.dataset.theme||(dark?'dark':'light');const n=cur==='dark'?'light':'dark';applyTheme(n);store.set('theme',n)};
+
+// tabs
+function show(v){document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v));document.querySelectorAll('.view').forEach(s=>s.hidden=s.id!=='v-'+v);store.set('tab',v);scrollTo(0,0)}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>show(b.dataset.v));
+
+$('#stats').innerHTML=[`정리 ${NOTES.length}개 단원`,`암기 ${MEMO.reduce((a,m)=>a+m.items.length,0)}개`,`문제 ${QUESTIONS.length}개`,`기출 ${QUESTIONS.filter(q=>q.gi).length}개`].map(t=>`<span class="pill">${t}</span>`).join('');
+
+function chips(el,onPick,key){
+  let cur=store.get(key,'전체');
+  const draw=()=>{el.innerHTML=['전체',...CHS].map(c=>`<button class="chip" aria-pressed="${c===cur}">${c}</button>`).join('');
+    el.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{cur=b.textContent;store.set(key,cur);draw();onPick(cur)})};
+  draw();onPick(cur);
+}
+
+// notes
+chips($('#noteChips'),ch=>{
+  $('#notes').innerHTML=NOTES.filter(n=>ch==='전체'||n.ch===ch).map((n,i)=>`<details class="note" ${ch!=='전체'||i===0?'open':''}><summary><span class="tag t-${n.tint}">${n.ch}</span><h3>${n.title}</h3></summary><div class="body">${n.html}</div></details>`).join('');
+},'noteCh');
+
+// memo
+let hideAns=false;
+$('#memoHide').onclick=()=>{hideAns=!hideAns;$('#memo').classList.toggle('hide-ans',hideAns);$('#memoHide').textContent=hideAns?'모두 보기':'가리고 외우기';$('#memo').querySelectorAll('.flash').forEach(f=>f.classList.remove('show'))};
+chips($('#memoChips'),ch=>{
+  $('#memo').innerHTML=MEMO.filter(m=>ch==='전체'||m.ch===ch).map(m=>`<div class="memo-h">${m.ch} · ${m.title}</div><div class="grid">${m.items.map(([k,v])=>`<button class="flash"><span class="k">${k}</span><span class="v">${v}</span></button>`).join('')}</div>`).join('');
+  $('#memo').querySelectorAll('.flash').forEach(f=>f.onclick=()=>f.classList.toggle('show'));
+},'memoCh');
+
+// quiz
+let qCh='전체',list=[],idx=0,score=0,answered=false;
+const wrong=new Set(store.get('wrong',[]));
+const saveWrong=()=>{store.set('wrong',[...wrong]);$('#wrongN').textContent=`(${wrong.size})`};
+saveWrong();
+const norm=s=>String(s).replace(/[\s·.,()\-]/g,'').toLowerCase();
+function build(){
+  list=QUESTIONS.filter(q=>(qCh==='전체'||q.ch===qCh)&&(!$('#optGi').checked||q.gi)&&(!$('#optWrong').checked||wrong.has(q.id)));
+  if($('#optShuffle').checked)list=list.map(q=>[Math.random(),q]).sort((a,b)=>a[0]-b[0]).map(x=>x[1]);
+  idx=0;score=0;render();
+}
+['optGi','optShuffle','optWrong'].forEach(id=>$('#'+id).onchange=build);
+function render(){
+  const P=$('#quiz');
+  if(!list.length){P.innerHTML=`<div class="empty">${$('#optWrong').checked?'오답노트가 비어 있어요 👍':'조건에 맞는 문제가 없어요'}</div>`;return}
+  if(idx>=list.length){
+    const pct=Math.round(score/list.length*100);
+    P.innerHTML=`<div class="result"><div class="score">${score} / ${list.length}</div><p>정답률 ${pct}% · 틀린 문제는 오답노트에 저장됐어요</p><div class="acts"><button class="btn primary" id="again">다시 풀기</button><button class="btn" id="wr">오답만 풀기</button></div></div>`;
+    $('#again').onclick=build;$('#wr').onclick=()=>{$('#optWrong').checked=true;build()};return;
+  }
+  const q=list[idx];answered=false;
+  let body='';
+  if(q.type==='mc')body=`<div class="opts">${q.choices.map((c,i)=>`<button class="opt" data-i="${i}"><span class="n">${i+1}</span><span>${esc(c)}</span></button>`).join('')}</div>`;
+  else if(q.type==='ox')body=`<div class="opts ox"><button class="opt" data-i="O">O</button><button class="opt" data-i="X">X</button></div>`;
+  else body=`<form class="short" id="sf"><input id="si" autocomplete="off" placeholder="정답 입력" enterkeyhint="done"><button class="btn primary">확인</button></form>`;
+  P.innerHTML=`<div class="qmeta"><span>${idx+1} / ${list.length} · 맞힌 수 ${score}</span><span><span class="badge">${q.ch}</span> ${q.gi?'<span class="badge gi">기출</span>':''} <span class="badge">${{mc:'객관식',ox:'OX',short:'단답형'}[q.type]}</span></span></div>
+  <div class="progress"><i style="width:${idx/list.length*100}%"></i></div>
+  <p class="qtext">${esc(q.q)}</p>${body}<div id="fb"></div>
+  <div class="qnav"><button class="btn" id="prev" ${idx?'':'disabled'}>이전</button><button class="btn primary" id="next">${idx===list.length-1?'결과 보기':'건너뛰기'}</button></div>`;
+  $('#prev').onclick=()=>{idx--;render()};
+  $('#next').onclick=()=>{idx++;render()};
+  if(q.type==='short'){$('#sf').onsubmit=e=>{e.preventDefault();const v=$('#si').value.trim();if(v)grade(q,[].concat(q.answer).some(a=>norm(a)===norm(v)),v)}}
+  else P.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{
+    const pick=q.type==='mc'?+b.dataset.i:b.dataset.i,ok=pick===q.answer;
+    P.querySelectorAll('.opt').forEach(o=>{o.disabled=true;const v=q.type==='mc'?+o.dataset.i:o.dataset.i;if(v===q.answer)o.classList.add('ok')});
+    if(!ok)b.classList.add('bad');grade(q,ok);
+  });
+}
+function grade(q,ok,typed){
+  if(answered)return;answered=true;
+  if(ok){score++;wrong.delete(q.id)}else wrong.add(q.id);saveWrong();
+  const ans=q.type==='mc'?`${q.answer+1}번`:q.type==='short'?[].concat(q.answer)[0]:q.answer;
+  $('#fb').innerHTML=`<div class="fb ${ok?'ok':'bad'}"><b>${ok?'정답!':'오답 · 정답: '+esc(ans)}</b>${q.exp?esc(q.exp):''}${!ok&&typed?`<div style="margin-top:6px"><button class="btn" id="mark">내 답도 맞음 처리</button></div>`:''}</div>`;
+  if($('#mark'))$('#mark').onclick=()=>{score++;wrong.delete(q.id);saveWrong();$('#mark').remove()};
+  if(q.type==='short')$('#si').disabled=true;
+  $('#next').textContent=idx===list.length-1?'결과 보기':'다음 문제';
+}
+chips($('#quizChips'),ch=>{qCh=ch;build()},'quizCh');
+show(store.get('tab','notes'));
+</script>
+</body>
+</html>
